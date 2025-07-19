@@ -1,13 +1,15 @@
 {
   "name": "gleam_flow_plugin",
   "version": "1.0.0",
-  "description": "",
+  "packageManager": "pnpm@10.12.4",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.12.4"
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.17.0",
+    "eslint": "^9.31.0",
+    "eslint-plugin-format": "^1.0.1"
+  }
 }
