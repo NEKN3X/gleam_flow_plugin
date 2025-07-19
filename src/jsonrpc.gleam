@@ -1,4 +1,5 @@
 import gleam/dynamic.{type Dynamic}
+import gleam/json.{type Json}
 
 // JSONRPCメッセージ接続のタイプ
 pub type MessageConnection
@@ -12,7 +13,7 @@ pub fn create_default_connection() -> MessageConnection
 pub fn on_request(
   connection: MessageConnection,
   method: String,
-  handler: fn(Dynamic) -> Dynamic,
+  handler: fn(Dynamic) -> Json,
 ) -> Nil
 
 // リクエストを送信
