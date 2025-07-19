@@ -6,8 +6,8 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./build/dev/javascript/flow_plugin/main.d.mts",
+      "default": "./build/dev/javascript/flow_plugin/main.mjs"
     }
   },
   "scripts": {

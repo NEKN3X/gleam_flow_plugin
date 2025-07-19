@@ -7,6 +7,6 @@
   "Version": "1.0.0",
   "Language": "javascript_v2",
   "Website": "https://github.com/NEKN3X/gleam_flow_plugin",
-  "ExecuteFileName": "./dist/index.js",
+  "ExecuteFileName": "./index.js",
   "IcoPath": "assets/cosense.png"
 }
