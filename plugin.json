@@ -1,0 +1,12 @@
+{
+  "ID": "242ea2d72843342g3139977kx239d2b4",
+  "ActionKeyword": "g",
+  "Name": "Gleam Flow Plugin",
+  "Description": "Gleam FlowLauncher Plugin Template",
+  "Author": "NEKN3X",
+  "Version": "1.0.0",
+  "Language": "javascript_v2",
+  "Website": "https://github.com/NEKN3X/gleam_flow_plugin",
+  "ExecuteFileName": "./dist/index.js",
+  "IcoPath": "assets/cosense.png"
+}

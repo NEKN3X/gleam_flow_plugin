@@ -1,20 +1,28 @@
 {
   "name": "gleam_flow_plugin",
+  "type": "module",
   "version": "1.0.0",
   "packageManager": "pnpm@10.12.4",
   "license": "MIT",
-  "main": "index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p tsconfig.json && tsc-alias"
   },
   "dependencies": {
     "vscode-jsonrpc": "^8.2.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.17.0",
+    "@types/node": "^24.0.15",
     "eslint": "^9.31.0",
     "eslint-plugin-format": "^1.0.1",
     "prettier": "^3.6.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.8.3"
   }
 }
