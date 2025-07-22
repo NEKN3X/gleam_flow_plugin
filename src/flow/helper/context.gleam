@@ -1,52 +1,37 @@
 import flow/plugin
-import gleam/dynamic/decode
+import gleam/dynamic/decode.{bool, list, string, subfield, success}
 
 pub fn decode_context(data) {
   let decoder = {
     let meta = "currentPluginMetadata"
-    use id <- decode.subfield([meta, "id"], decode.string)
-    use name <- decode.subfield([meta, "name"], decode.string)
-    use author <- decode.subfield([meta, "author"], decode.string)
-    use version <- decode.subfield([meta, "version"], decode.string)
-    use language <- decode.subfield([meta, "language"], decode.string)
-    use description <- decode.subfield([meta, "description"], decode.string)
-    use website <- decode.subfield([meta, "website"], decode.string)
-    use disabled <- decode.subfield([meta, "disabled"], decode.bool)
-    use home_disabled <- decode.subfield([meta, "homeDisabled"], decode.bool)
-    use execute_file_path <- decode.subfield(
-      [meta, "executeFilePath"],
-      decode.string,
-    )
-    use execute_file_name <- decode.subfield(
-      [meta, "executeFileName"],
-      decode.string,
-    )
-    use plugin_directory <- decode.subfield(
-      [meta, "pluginDirectory"],
-      decode.string,
-    )
-    use action_keyword <- decode.subfield(
-      [meta, "actionKeyword"],
-      decode.string,
-    )
-    use action_keywords <- decode.subfield(
-      [meta, "actionKeywords"],
-      decode.list(decode.string),
-    )
-    use hide_action_keyword_panel <- decode.subfield(
+    use id <- subfield([meta, "id"], string)
+    use name <- subfield([meta, "name"], string)
+    use author <- subfield([meta, "author"], string)
+    use version <- subfield([meta, "version"], string)
+    use language <- subfield([meta, "language"], string)
+    use description <- subfield([meta, "description"], string)
+    use website <- subfield([meta, "website"], string)
+    use disabled <- subfield([meta, "disabled"], bool)
+    use home_disabled <- subfield([meta, "homeDisabled"], bool)
+    use execute_file_path <- subfield([meta, "executeFilePath"], string)
+    use execute_file_name <- subfield([meta, "executeFileName"], string)
+    use plugin_directory <- subfield([meta, "pluginDirectory"], string)
+    use action_keyword <- subfield([meta, "actionKeyword"], string)
+    use action_keywords <- subfield([meta, "actionKeywords"], list(string))
+    use hide_action_keyword_panel <- subfield(
       [meta, "hideActionKeywordPanel"],
-      decode.bool,
+      bool,
     )
-    use ico_path <- decode.subfield([meta, "icoPath"], decode.string)
-    use plugin_settings_directory_path <- decode.subfield(
+    use ico_path <- subfield([meta, "icoPath"], string)
+    use plugin_settings_directory_path <- subfield(
       [meta, "pluginSettingsDirectoryPath"],
-      decode.string,
+      string,
     )
-    use plugin_cache_directory_path <- decode.subfield(
+    use plugin_cache_directory_path <- subfield(
       [meta, "pluginCacheDirectoryPath"],
-      decode.string,
+      string,
     )
-    decode.success(
+    success(
       plugin.Context(plugin.Metadata(
         id,
         name,
