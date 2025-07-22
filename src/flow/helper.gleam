@@ -1,8 +1,9 @@
 import flow/helper/context
+import flow/helper/query
+import flow/helper/result
 import flow/plugin.{
   type FlowPlugin, type FlowPluginConfig, FlowPluginConfig, send_request,
 }
-import gleam/dynamic
 import gleam/json
 import gleam/list
 
@@ -28,19 +29,19 @@ pub fn init(
           json.object([])
         }
       }
-      json.object([#("result", json.object([]))])
     })
   }
   plugin
 }
 
-pub fn on(
-  plugin: FlowPlugin(_, _),
-  method: String,
-  f: fn(dynamic.Dynamic) -> json.Json,
+pub fn query(
+  plugin: FlowPlugin(_, methods),
+  f: fn(plugin.Query) -> List(plugin.JSONRPCResponse),
 ) {
-  plugin.on_request(plugin, method, fn(params) { f(params) })
-  plugin.clone(plugin)
+  plugin.on_request(plugin, "query", fn(params) {
+    let assert Ok(query) = query.decode_query(params)
+    json.object([#("result", json.preprocessed_array(result.to_json(f(query))))])
+  })
 }
 
 pub fn run(plugin: FlowPlugin(_, _)) {

@@ -1,3 +1,5 @@
+import gleam/dict
+import gleam/option.{type Option}
 import jsonrpc
 
 pub type Metadata {
@@ -35,6 +37,38 @@ pub type Query {
     search: String,
     search_terms: List(String),
     action_keyword: String,
+  )
+}
+
+pub type Glyph {
+  Glyph(glyph: String, font_family: String)
+}
+
+pub type Parameters {
+  StringParam(String)
+  IntParam(Int)
+  BoolParam(Bool)
+  RecordParam(dict.Dict(String, Parameters))
+  StringListParam(List(String))
+  IntListParam(List(Int))
+  BoolListParam(List(Bool))
+  RecordListParam(List(dict.Dict(String, Parameters)))
+  EmptyParam
+}
+
+pub type JSONRPCAction {
+  JSONRPCAction(method: String, parameters: Parameters)
+}
+
+pub type JSONRPCResponse {
+  JSONRPCResponse(
+    title: String,
+    sub_title: Option(String),
+    glyph: Option(Glyph),
+    ico_path: Option(String),
+    json_rpc_action: JSONRPCAction,
+    context_data: Option(List(JSONRPCResponse)),
+    score: Option(Int),
   )
 }
 
