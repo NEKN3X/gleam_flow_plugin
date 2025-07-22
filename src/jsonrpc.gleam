@@ -21,7 +21,7 @@ pub fn on_request(
 pub fn send_request(
   connection: MessageConnection,
   method: String,
-  params: Dynamic,
+  params: Json,
 ) -> Dynamic
 
 // 接続をリッスン開始
