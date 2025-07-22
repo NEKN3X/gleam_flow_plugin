@@ -2,8 +2,12 @@ import flow/helper
 import flow/plugin
 import gleam/option.{None}
 import method/open_url
+import settings
 
-pub fn make_result(query, settings) -> List(plugin.JSONRPCResponse) {
+pub fn make_result(
+  _query: plugin.Query,
+  _settings: settings.Settings,
+) -> List(plugin.JSONRPCResponse) {
   [
     plugin.JSONRPCResponse(
       title: "Example Response",
