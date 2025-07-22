@@ -9,7 +9,7 @@ fn param_to_json(param) {
     plugin.StringParam(s) -> json.string(s)
     plugin.IntParam(n) -> json.int(n)
     plugin.BoolParam(b) -> json.bool(b)
-    plugin.RecordParam(r) -> json.dict(r, fn(s) { s }, param_to_json)
+    plugin.RecordParam(r) -> json.dict(r, function.identity, param_to_json)
     plugin.StringListParam(l) -> json.array(l, json.string)
     plugin.IntListParam(l) -> json.array(l, json.int)
     plugin.BoolListParam(l) -> json.array(l, json.bool)
@@ -17,7 +17,6 @@ fn param_to_json(param) {
       json.array(l, fn(record) {
         json.dict(record, function.identity, param_to_json)
       })
-    plugin.EmptyParam -> json.object([])
   }
 }
 
@@ -31,7 +30,11 @@ pub fn to_json(data: List(plugin.JSONRPCResponse)) -> List(json.Json) {
       ])
     None -> None
   }
-  let parameters = param_to_json(item.json_rpc_action.parameters)
+  let parameters =
+    json.preprocessed_array(list.map(
+      item.json_rpc_action.parameters,
+      param_to_json,
+    ))
   let action =
     json.object([
       #("method", json.string(item.json_rpc_action.method)),

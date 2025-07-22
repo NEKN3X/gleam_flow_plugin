@@ -1,4 +1,5 @@
 import gleam/dict
+import gleam/dynamic/decode
 import gleam/option.{type Option}
 import jsonrpc
 
@@ -44,17 +45,19 @@ pub type Glyph {
   Glyph(glyph: String, font_family: String)
 }
 
-pub type Parameters {
+pub type ParametersAllowedTypes {
   StringParam(String)
   IntParam(Int)
   BoolParam(Bool)
-  RecordParam(dict.Dict(String, Parameters))
+  RecordParam(dict.Dict(String, ParametersAllowedTypes))
   StringListParam(List(String))
   IntListParam(List(Int))
   BoolListParam(List(Bool))
-  RecordListParam(List(dict.Dict(String, Parameters)))
-  EmptyParam
+  RecordListParam(List(dict.Dict(String, ParametersAllowedTypes)))
 }
+
+pub type Parameters =
+  List(ParametersAllowedTypes)
 
 pub type JSONRPCAction {
   JSONRPCAction(method: String, parameters: Parameters)
@@ -88,33 +91,30 @@ pub type MatchResult {
   )
 }
 
-pub type FlowPluginConfig(a, b) {
-  FlowPluginConfig(settings: a, methods: b)
+pub type FlowPluginConfig(a) {
+  FlowPluginConfig(settings: a, decoder: decode.Decoder(a))
 }
 
-pub type FlowPlugin(a, b) {
-  FlowPlugin(
-    connection: jsonrpc.MessageConnection,
-    config: FlowPluginConfig(a, b),
-  )
+pub type FlowPlugin {
+  FlowPlugin(connection: jsonrpc.MessageConnection)
 }
 
-pub fn clone(plugin: FlowPlugin(_, _)) {
-  FlowPlugin(connection: plugin.connection, config: plugin.config)
+pub fn create() {
+  FlowPlugin(connection: jsonrpc.create_default_connection())
 }
 
-pub fn create(config: FlowPluginConfig(_, _)) {
-  FlowPlugin(connection: jsonrpc.create_default_connection(), config: config)
-}
-
-pub fn on_request(plugin: FlowPlugin(_, _), method, handler) {
+pub fn on_request(plugin: FlowPlugin, method, handler) {
   jsonrpc.on_request(plugin.connection, method, handler)
 }
 
-pub fn send_request(plugin: FlowPlugin(_, _), method, params) {
+pub fn on_query(plugin: FlowPlugin, method, handler) {
+  jsonrpc.on_query(plugin.connection, method, handler)
+}
+
+pub fn send_request(plugin: FlowPlugin, method, params) {
   jsonrpc.send_request(plugin.connection, method, params)
 }
 
-pub fn listen(plugin: FlowPlugin(_, _)) {
+pub fn listen(plugin: FlowPlugin) {
   jsonrpc.listen(plugin.connection)
 }

@@ -1,21 +1,19 @@
 import flow/helper/context
 import flow/helper/query
 import flow/helper/result
-import flow/plugin.{
-  type FlowPlugin, type FlowPluginConfig, FlowPluginConfig, send_request,
-}
+import flow/plugin.{type FlowPlugin, send_request}
+import gleam/dynamic/decode
 import gleam/json
 import gleam/list
 
-pub fn create_config(settings, methods) {
-  FlowPluginConfig(settings, methods)
+pub fn create() {
+  plugin.create()
 }
 
 pub fn init(
-  config: FlowPluginConfig(_, _),
-  f: fn(FlowPlugin(_, _), plugin.Context) -> FlowPlugin(_, _),
-) -> FlowPlugin(_, _) {
-  let plugin = plugin.create(config)
+  plugin: FlowPlugin,
+  f: fn(FlowPlugin, plugin.Context) -> FlowPlugin,
+) -> FlowPlugin {
   {
     plugin.on_request(plugin, "initialize", fn(params) {
       let context = context.decode_context(params)
@@ -34,17 +32,45 @@ pub fn init(
   plugin
 }
 
+pub type Method(a) {
+  Method(
+    name: String,
+    encoder: fn(a) -> plugin.Parameters,
+    decoder: decode.Decoder(a),
+    handler: fn(FlowPlugin, a) -> Nil,
+  )
+}
+
+pub fn action(method: Method(a), params: a) {
+  let parameters = method.encoder(params)
+  plugin.JSONRPCAction(method: method.name, parameters: parameters)
+}
+
 pub fn query(
-  plugin: FlowPlugin(_, methods),
-  f: fn(plugin.Query) -> List(plugin.JSONRPCResponse),
+  plugin: FlowPlugin,
+  settings_decoder: decode.Decoder(settings),
+  f: fn(plugin.Query, settings) -> List(plugin.JSONRPCResponse),
 ) {
-  plugin.on_request(plugin, "query", fn(params) {
-    let assert Ok(query) = query.decode_query(params)
-    json.object([#("result", json.preprocessed_array(result.to_json(f(query))))])
+  plugin.on_query(plugin, "query", fn(q, s) {
+    let assert Ok(query) = query.decode_query(q)
+    let assert Ok(settings) = decode.run(s, settings_decoder)
+    json.object([
+      #("result", json.preprocessed_array(result.to_json(f(query, settings)))),
+    ])
   })
 }
 
-pub fn run(plugin: FlowPlugin(_, _)) {
+pub fn method(plugin: FlowPlugin, method: Method(a)) {
+  plugin.on_request(plugin, method.name, fn(params) {
+    case decode.run(params, method.decoder) {
+      Ok(value) -> method.handler(plugin, value)
+      Error(_) -> Nil
+    }
+    json.object([])
+  })
+}
+
+pub fn run(plugin: FlowPlugin) {
   plugin.listen(plugin)
 }
 
@@ -54,7 +80,7 @@ pub type FlowPluginMethod {
   ShowMessage(String)
 }
 
-pub fn flow_method(plugin: FlowPlugin(_, _), method: FlowPluginMethod) {
+pub fn flow_method(plugin: FlowPlugin, method: FlowPluginMethod) {
   case method {
     OpenUrl(url) -> send_request(plugin, "OpenUrl", open_url(url, False))
     OpenInPrivateWindow(url) ->
