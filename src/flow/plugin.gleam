@@ -1,7 +1,7 @@
+import ffi/jsonrpc
 import gleam/dict
 import gleam/dynamic/decode
 import gleam/option.{type Option}
-import jsonrpc
 
 pub type Metadata {
   Metadata(
