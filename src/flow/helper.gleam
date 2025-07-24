@@ -45,6 +45,7 @@ pub fn query(
       #("result", json.preprocessed_array(result.to_json(f(query, settings)))),
     ])
   })
+  plugin
 }
 
 pub fn method(plugin: FlowPlugin, method: Method(a)) {
@@ -52,6 +53,7 @@ pub fn method(plugin: FlowPlugin, method: Method(a)) {
     method.handler(plugin, params)
     json.object([])
   })
+  plugin
 }
 
 pub fn run(plugin: FlowPlugin) {
