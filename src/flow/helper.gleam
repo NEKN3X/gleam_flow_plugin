@@ -96,11 +96,11 @@ fn copy_text(text: String) {
 pub type Method(a) {
   Method(
     name: String,
-    action: fn(a) -> plugin.JSONRPCAction,
+    parameters: fn(a) -> plugin.Parameters,
     handler: fn(plugin.FlowPlugin, dynamic.Dynamic) -> Nil,
   )
 }
 
 pub fn action(method: Method(a), a) -> plugin.JSONRPCAction {
-  method.action(a)
+  plugin.JSONRPCAction(method: method.name, parameters: method.parameters(a))
 }
