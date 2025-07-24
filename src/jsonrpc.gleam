@@ -25,7 +25,7 @@ pub fn send_request(
   connection: MessageConnection,
   method: String,
   params: Json,
-) -> Dynamic
+) -> a
 
 @external(javascript, "./ffi/jsonrpc_ffi.mjs", "listen")
 pub fn listen(connection: MessageConnection) -> Nil

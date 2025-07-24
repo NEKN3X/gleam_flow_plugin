@@ -2,6 +2,7 @@ import flow/helper/context
 import flow/helper/query
 import flow/helper/result
 import flow/plugin.{type FlowPlugin, send_request}
+import gleam/dynamic
 import gleam/dynamic/decode
 import gleam/json
 import gleam/list
@@ -32,20 +33,6 @@ pub fn init(
   plugin
 }
 
-pub type Method(a) {
-  Method(
-    name: String,
-    encoder: fn(a) -> plugin.Parameters,
-    decoder: decode.Decoder(a),
-    handler: fn(FlowPlugin, a) -> Nil,
-  )
-}
-
-pub fn action(method: Method(a), params: a) {
-  let parameters = method.encoder(params)
-  plugin.JSONRPCAction(method: method.name, parameters: parameters)
-}
-
 pub fn query(
   plugin: FlowPlugin,
   settings_decoder: decode.Decoder(settings),
@@ -62,10 +49,7 @@ pub fn query(
 
 pub fn method(plugin: FlowPlugin, method: Method(a)) {
   plugin.on_request(plugin, method.name, fn(params) {
-    case decode.run(params, method.decoder) {
-      Ok(value) -> method.handler(plugin, value)
-      Error(_) -> Nil
-    }
+    method.handler(plugin, params)
     json.object([])
   })
 }
@@ -78,6 +62,7 @@ pub type FlowPluginMethod {
   OpenUrl(String)
   OpenInPrivateWindow(String)
   ShowMessage(String)
+  CopyText(String)
 }
 
 pub fn flow_method(plugin: FlowPlugin, method: FlowPluginMethod) {
@@ -86,6 +71,7 @@ pub fn flow_method(plugin: FlowPlugin, method: FlowPluginMethod) {
     OpenInPrivateWindow(url) ->
       send_request(plugin, "OpenUrl", open_url(url, True))
     ShowMessage(title) -> send_request(plugin, "ShowMsg", show_message(title))
+    CopyText(text) -> send_request(plugin, "CopyToClipboard", copy_text(text))
   }
 }
 
@@ -101,4 +87,20 @@ fn open_url(url: String, private: Bool) {
 
 fn show_message(title: String) {
   json.object([#("title", json.string(title))])
+}
+
+fn copy_text(text: String) {
+  json.object([#("text", json.string(text))])
+}
+
+pub type Method(a) {
+  Method(
+    name: String,
+    action: fn(a) -> plugin.JSONRPCAction,
+    handler: fn(plugin.FlowPlugin, dynamic.Dynamic) -> Nil,
+  )
+}
+
+pub fn action(method: Method(a), a) -> plugin.JSONRPCAction {
+  method.action(a)
 }
