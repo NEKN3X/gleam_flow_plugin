@@ -48,7 +48,12 @@ pub fn to_json(data: List(plugin.JSONRPCResponse)) -> List(Json) {
         item.score |> option.map(fn(x) { #("score", int(x)) }),
         context_data,
       ]
-      |> list.filter_map(Error),
+      |> list.filter_map(fn(x) {
+        case x {
+          Some(value) -> Ok(value)
+          None -> Error("No value")
+        }
+      }),
     ),
   )
 }
