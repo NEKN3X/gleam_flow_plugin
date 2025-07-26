@@ -2,18 +2,10 @@ import antfu from '@antfu/eslint-config'
 
 export default antfu({
   formatters: true,
+  react: true,
   ignores: [
-    '**/output',
-    '**/.spago',
-    '**/.psci_modules',
-    '**/manifest.toml',
+    '**/dist/**',
+    '**/build/**',
+    '**/node_modules/**',
   ],
-  rules: {
-    'style/max-len': [
-      'error',
-      {
-        code: 120,
-      },
-    ],
-  },
 })
