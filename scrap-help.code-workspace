@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"name": "scrap-help",
+			"path": "."
+		},
+		{
+			"name": "pure",
+			"path": "packages/pure"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"**/node_modules": true,
+			"packages/pure": true
+		}
+	}
+}

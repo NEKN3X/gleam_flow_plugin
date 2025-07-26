@@ -1,28 +1,28 @@
 {
-  "name": "gleam_flow_plugin",
-  "type": "module",
-  "version": "1.0.0",
+  "name": "scrap-help",
+  "private": true,
   "packageManager": "pnpm@10.12.4",
   "license": "MIT",
-  "exports": {
-    ".": {
-      "types": "./build/dev/javascript/flow_plugin/main.d.mts",
-      "default": "./build/dev/javascript/flow_plugin/main.mjs"
-    }
+  "engines": {
+    "node": ">=18"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && tsc-alias"
-  },
-  "dependencies": {
-    "vscode-jsonrpc": "^8.2.1"
+    "build": "turbo run build",
+    "lint": "eslint && turbo run lint",
+    "format": "eslint --fix",
+    "check-types": "turbo run check-types",
+    "test": "turbo run test"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.17.0",
-    "@types/node": "^24.0.15",
-    "eslint": "^9.31.0",
+    "@antfu/eslint-config": "^4.16.2",
+    "@types/node": "^24.0.12",
+    "eslint": "^9.30.1",
     "eslint-plugin-format": "^1.0.1",
+    "neverthrow": "^8.2.0",
     "prettier": "^3.6.2",
     "tsc-alias": "^1.8.16",
-    "typescript": "^5.8.3"
+    "turbo": "^2.5.4",
+    "typescript": "5.8.3",
+    "vitest": "^3.2.4"
   }
 }

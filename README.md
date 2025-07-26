@@ -1,24 +1,20 @@
-# flow_plugin
+# ScrapHelp
 
-[![Package Version](https://img.shields.io/hexpm/v/flow_plugin)](https://hex.pm/packages/flow_plugin)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/flow_plugin/)
+- Scrapboxページを検索する機能
+- Scrapboxページに書いているヘルプ(Helpfeel記法)を検索する機能
+- 例
+  - ![](https://i.gyazo.com/ac8e1882e0035a21a2712a9b360187a9.png)
+    - ScrapboxのページにHelpfeel記法で書いているヘルプ
+  - ![](https://i.gyazo.com/0dd8a0062bd8fb9a8a96f52d110d4a48.png)
+  - テキストタイプのヘルプなので`git commit --allow-empty -m "Initial commit"`をクリップボードにコピーする
+- テキストタイプとURLタイプのヘルプがあり、URLタイプのヘルプはブラウザで開かれる
 
-```sh
-gleam add flow_plugin@1
+## Flow Launcher Plugin
+
+### Dev
+
+- FlowLauncher/Pluginsディレクトリにapps/flowディレクトリのsymlinkを貼る
+
 ```
-```gleam
-import flow_plugin
-
-pub fn main() -> Nil {
-  // TODO: An example of the project in use
-}
-```
-
-Further documentation can be found at <https://hexdocs.pm/flow_plugin>.
-
-## Development
-
-```sh
-gleam run   # Run the project
-gleam test  # Run the tests
+mklink /J C:\Users\USER\AppData\Roaming\FlowLauncher\Plugins\scrap-help C:\Users\USER\repo\scrap-help\apps\flow
 ```
