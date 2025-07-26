@@ -1,12 +1,42 @@
 import ffi/jsonrpc
-import gleam/json
+import gleam/dynamic/decode
+import make_result
+import plugin/helper
+import settings
 
 pub fn main() -> Nil {
   let connection = jsonrpc.create_connection()
-  let on_request = fn(method, handler) {
-    jsonrpc.on_request(connection, method, handler)
-  }
-  on_request("initialize", fn(_) { json.object([]) })
-  on_request("query", fn(_) { json.object([]) })
+  helper.initialize(connection, fn(context) {
+    use query, settings <- helper.query(connection, settings.decoder())
+    make_result.make_result(connection, query, settings, context)
+  })
+
+  helper.on(connection, "open_url", fn(params) {
+    {
+      case decode.run(params, decode.list(decode.string)) {
+        Ok([url]) -> helper.open_url(connection, url)
+        _ -> Nil
+      }
+    }
+  })
+
+  helper.on(connection, "show_message", fn(params) {
+    {
+      case decode.run(params, decode.string) {
+        Ok(message) -> helper.show_message(connection, message)
+        _ -> Nil
+      }
+    }
+  })
+
+  helper.on(connection, "copy_text", fn(params) {
+    {
+      case decode.run(params, decode.string) {
+        Ok(message) -> helper.copy_text(connection, message)
+        _ -> Nil
+      }
+    }
+  })
+
   jsonrpc.listen(connection)
 }

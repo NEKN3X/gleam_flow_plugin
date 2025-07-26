@@ -1,10 +1,17 @@
 import gleam/dynamic
+import gleam/javascript/promise
 import gleam/json
 
 pub type MessageConnection
 
 @external(javascript, "./dist/jsonrpc_ffi.js", "createConnection")
 pub fn create_connection() -> MessageConnection
+
+@external(javascript, "./dist/jsonrpc_ffi.js", "initialize")
+pub fn initialize(
+  connection: MessageConnection,
+  handler: fn(dynamic.Dynamic) -> json.Json,
+) -> Nil
 
 @external(javascript, "./dist/jsonrpc_ffi.js", "onRequest")
 pub fn on_request(
@@ -13,8 +20,34 @@ pub fn on_request(
   handler: fn(dynamic.Dynamic) -> json.Json,
 ) -> Nil
 
+@external(javascript, "./dist/jsonrpc_ffi.js", "onRequest")
+pub fn on_request_async(
+  connection: MessageConnection,
+  method: String,
+  handler: fn(dynamic.Dynamic) -> promise.Promise(json.Json),
+) -> Nil
+
+@external(javascript, "./dist/jsonrpc_ffi.js", "onQuery")
+pub fn on_query(
+  connection: MessageConnection,
+  handler: fn(dynamic.Dynamic, dynamic.Dynamic) -> json.Json,
+) -> Nil
+
+@external(javascript, "./dist/jsonrpc_ffi.js", "onQuery")
+pub fn on_query_async(
+  connection: MessageConnection,
+  handler: fn(dynamic.Dynamic, dynamic.Dynamic) -> promise.Promise(json.Json),
+) -> Nil
+
 @external(javascript, "./dist/jsonrpc_ffi.js", "sendRequest")
 pub fn send_request(
+  connection: MessageConnection,
+  method: String,
+  params: json.Json,
+) -> Nil
+
+@external(javascript, "./dist/jsonrpc_ffi.js", "sendRequest")
+pub fn send_return_request(
   connection: MessageConnection,
   method: String,
   params: json.Json,
